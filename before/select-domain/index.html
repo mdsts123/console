@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>select-domain</title>
+    <!--<link rel="stylesheet" href="https://unpkg.com/vue-easytable/umd/css/index.css">-->
+    <link rel="stylesheet" href="src/css/main.css">
+    <base target="_blank">
+    <style>
+        [v-cloak] {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+<div id="app" :class="{login:!isLogin}" v-cloak>
+    <div class="m-domain" v-if="isLogin">
+       <marquee behavior="h" direction="" style="color:#fff;background-color: #2CB8FF;">不定期更新中……</marquee>
+        <header>
+            <h1 class="letter-center">{{title}}</h1>
+        </header>
+        <div class="m-container">
+            <!--服务器列表-->
+            <ul class=" serverMenu">
+                <li
+                        v-for="(serve) in serverMenu"
+                        :key="serve.ip"
+                        @click.stop='handleSelectServer(serve.ip)'
+                        :style="{width:100/(serverMenu.length)+'%'}"
+                        :class="{active:ip==serve.ip}"
+                >{{serve.ip}}---{{serve.alias}}
+                </li>
+            </ul>
+            <!--数据表格-->
+            <div class="m-main server">
+                <!--左边服务器表格-->
+                <section class="data ">
+                    <!--左边 站点列表-->
+                    <div class="webs up-down-menu">
+                        <section class="search ">
+                            <input class="" type="text" placeholder="站点名" @input="handleFilterWeb">
+                            <p class="result">当前服务器共{{webs.length}}个站点</p>
+                            <p class="result">搜索结果有{{filterWebSum}}个站点</p>
+                        </section>
+                        <section class="menuBox">
+                            <ul class="up-down-menu">
+                                <li v-for="(web,index) in viewWebs"
+                                    :class="{active:webTip==web}"
+                                    @click="onSelectWeb(web)"
+                                    :key="index"
+                                >{{web}}</li>
+                            </ul>
+                        </section>
+                    </div>
+                    <!--右边 域名表格-->
+                    <div class="domains up-down-menu">
+                        <!--域名搜索-->
+                        <div class="search">
+                            <input type="text" placeholder="域名" @input="handleFilterDomain">
+                            <p class="result">当前站点共有{{domains.length}}个域名</p>
+                            <p class="result">搜索结果有{{filterDomainSum}}个</p>
+                        </div>
+                        <!--域名表格-->
+                        <section class="menuBox">
+                            <ul>
+                                <li v-for="(domain,index) in viewDomains"
+
+                                ><span>{{domain}}</span><a :href="'//'+domain">查看页面</a></li>
+                            </ul>
+                        </section>
+                    </div>
+                </section>
+                <!--右边 全站搜索-->
+                <section class="allSearch up-down-menu">
+                    <div class="search">
+                        <input type="text" placeholder="全站搜索" @input="handleFilterAllDomains">
+                        <p class="result">共{{filterAllDomains.length}}个</p>
+                    </div>
+                    <div class="menuBox">
+                        <ul>
+                            <li v-for="result in filterAllDomains">
+                                {{result.web}}--------<span v-html=result.selectHtml></span>
+                            </li>
+                        </ul>
+                    </div>
+                </section>
+                <!--模态-->
+                <div class="modal" v-if="loadState">
+                    <div class="box">
+                        {{loadState}}
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <div class="formBox scrollBox" v-if="!isLogin">
+        <div class="scroll">
+            <div class="scrollView">
+                <div class="formView selectMenu">
+                    <div class="selectIMG selectItem">
+                        <input class="input-text" placeholder="请输入微信号:" type="text" v-model="wxnum">
+                        <ul>
+                            <li>
+                                <input type="radio" id="f-server" checked  value="cdn2.tp19.cn" name="server" v-model="imgSelectDomain"><label for="f-server" >f-server</label>
+                            </li>
+                            <li>
+                                <input type="radio" id="p-server" value="src.zjiaing.top" name="server" v-model="imgSelectDomain"><label for="p-server" >p-server</label>
+
+                            </li>
+                        </ul>
+                        <img :src="'//'+imgSelectDomain+'/'+imgPath[imgSelectDomain]+'/'+wxnum+'.jpg'" >
+                        <p class="imgSrcPath">http://{{imgSelectDomain+'/'+imgPath[imgSelectDomain]+'/'+wxnum+'.jpg'}}</p>
+                    </div>
+                    <form class="selectItem"   @submit.prevent="login">
+                        <h1 class="letter-center">{{title}}</h1>
+                        <!--用户名-->
+                        <input type="text" placeholder="用户名" class="name" v-model="name">
+                        <!--密码-->
+                        <input type="password" placeholder="密码" class="pwd" v-model="pwd">
+                        <button class="submit">submit</button>
+                    </form>
+                    <div class="selectAddress selectItem">
+                        <input type="text" class="input-text" :placeholder="'当前ip:'+atIP" v-model="addressIP">
+                        <ul>
+                            <li v-for="(v,k) in keys" >
+                                <input type="radio" name="key" :id="'key-'+k" :value="v" v-model="addressKey">
+                                <label :for="'key-'+k">{{k}}-key</label>
+                            </li>
+                        </ul>
+                        <p>
+                            <span class="addStatus">{{addStatus}}</span>
+                            <br>
+                            <template v-for="(result,addKey) in addResult " v-if="addKey=='province'||addKey=='city'">
+                                <span >{{addKey}}:{{result}}</span>
+                                <br>
+                            </template>
+                        </p>
+                        <p class="addUrl">{{addUrl}}</p>
+                        <button @click.prevent="handleSelectAddress">检测</button>
+
+                    </div>
+                    <div class="selectItem adIframe">
+                        <iframe src="https://lbs.amap.com/dev/user/quota/manage" frameborder="0"></iframe>
+                    </div>
+                </div>
+                <div class="position">
+                    <!--功能提示-->
+                    <p class="notice subCenter">下方有更多功能 <i>↓</i></p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/vue@2.5.17/dist/vue.js"></script>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script>
+    let c=console;
+    //请求配置
+
+    function request(config) {
+        let instance = axios.create({
+                baseURL: '/domain/select_domain.php',
+                timeout: 5000,
+                headers: {
+                    'Content-type': 'application/x-www-form-urlencoded'
+                }
+            }),
+            param = new URLSearchParams();
+        if(config.method=='post'){
+            for (let key of Object.keys(config.data)) {
+                param.append(key, config.data[key])
+            }
+            config.data=param
+        }
+        Object.assign(config, {data:config.data})
+        return instance(config)
+
+    }
+    let addressData={
+        addressIP:'',
+        keys:{
+            ls:'392bec004913d54b3e675256bfff7da0',
+            fq:'6ebf043822f25af08eacf0fa587746fb',
+            xy:'3a9aeef9a3db852e4ef35e645292e712',
+        },
+        addStatus:'',
+        addressKey:'3a9aeef9a3db852e4ef35e645292e712',
+        addResult:{},
+        addUrl:''
+    }
+    let app = new Vue({
+        el: '#app',
+        data() {
+            return Object.assign(
+                addressData,
+                {
+                    title:'select-domain',
+                    name: '',
+                    pwd: '',
+                    isLogin: false,
+                    servers: {
+                      //  '47.52.119.33':null,
+                        '47.244.41.117':null,
+                        '47.244.138.53':null,
+                        '47.75.184.14':null,
+                        '47.90.123.75':null,
+                        '103.91.209.237':null,
+
+                    },//保存值
+                    serverMenu:[
+                     //   {ip:'47.52.119.33',alias:'f-阿里'},
+                        {ip:'47.244.41.117',alias:'s-阿里'},
+                        {ip:'47.244.138.53',alias:'by-阿里'},
+                        {ip:'47.75.184.14',alias:'b-阿里'},
+                        {ip:'47.90.123.75',alias:'e-阿里'},
+                        {ip:'103.91.209.237',alias:'y-国内'},
+
+                    ],
+                    //加载中^_^.....
+                    loadState: '请选择服务器',
+                    selectServer: '',
+                    ip:'',
+                    webTip:'',
+                    preWebTip:{},
+                    viewWebs:[],
+                    filterWebSum:0,
+                    viewDomains:[],
+                    filterDomainSum:0,
+                    filterAllDomains:[],
+                    /*新模块*/
+
+                    wxnum:'tjwxh',
+                    imgSelectDomain:'cdn2.tp19.cn',
+                    imgPath:{
+                        'cdn2.tp19.cn':"ewm",
+                        'src.zjiaing.top':'zj-ewm'
+                    },
+                    atIP:''
+                })
+
+        },
+        created(){
+            this.getIP();
+        },
+        methods: {
+            login() {
+                request({
+                    method: 'post',
+                    data: {name: app.name, pwd: app.pwd}
+                }).then(function (res) {
+                    if (res.data.msg == 'ok')app.isLogin = true
+                    else alert('登录失败')
+                })
+                    .catch(function (err) {
+                        console.warn(err)
+                    })
+            },
+            handleSelectServer(ip) {
+                this.ip=ip
+                if(!this.servers[ip]){
+                    this.loadState = '加载中……'
+                    request({
+                        method: 'get',
+                        url: '?server='+ip,
+                    }).then(res => {
+                        if(res.data){
+                            app.loadState='';
+                            console.log(ip)
+                            app.servers[ip]=res.data
+                            app.webTip=Object.keys(app.servers[ip])[0]//默认高亮第一个
+                            app.viewWebs=app.webs;
+                            app.viewDomains=app.domains
+                        }
+                    })
+                }else{
+                    app.webTip=this.preWebTip[this.ip]['webTip']
+                    app.viewWebs=app.webs;
+                    app.viewDomains=app.domains
+                }
+            },
+            onSelectWeb(web){
+                this.webTip=web
+            },
+            handleFilterWeb(e){
+                let {value}=e.target;
+                this.viewWebs=this.webs.filter(function (web) {
+                    return web.includes(value);
+                })
+                this.filterWebSum=this.viewWebs.length;
+                this.webTip=this.viewWebs[0]
+            },
+            handleFilterDomain(e){
+                let {value}=e.target;
+                this.viewDomains=this.domains.filter(function (web) {
+                    return web.includes(value);
+                })
+                this.filterDomainSum=this.viewDomains.length;
+            },
+            handleFilterAllDomains(e){
+                let {value}=e.target,arr=[];
+                if(!value){this.filterAllDomains=[];return/**/}
+                for(let web of Object.keys(this.servers[this.ip])){
+                    for(let domain of this.servers[this.ip][web]){
+                        if(domain.includes(value)){
+                            arr.push({web:web,selectHtml:domain.replace(value,'<mark>'+value+'</mark>')})
+                        }
+                    }
+                }
+                this.filterAllDomains=arr;
+                arr=null;
+            },
+            handleSelectAddress(){
+                let ip=app.addressIP.trim()||app.atIP;
+                app.addStatus='查询中'
+                app.addUrl=`https://restapi.amap.com/v3/ip?key=${app.addressKey}&ip=${ip}`
+                axios({
+                    method:'get',
+                    url:app.addUrl,
+                }).then(res=>{
+                    app.addStatus='接口正常使用'
+                    console.log(res);
+                    app.addResult=res.data
+                    ip=null
+                })
+            },
+            getIP(){
+                request({
+                    method:'get',
+                    url:'?getIP=getIP'
+                }).then(res=>{
+                    if(res.data){
+                        app.atIP=res.data['ip']
+                    }
+                })
+            }
+        },
+        watch:{
+            webTip(){
+                this.preWebTip[this.ip]={webTip:this.webTip};
+                this.viewDomains=this.domains
+            },
+        },
+        computed:{
+            webs:function () {
+                if(this.servers[this.ip]){
+                    return Object.keys(this.servers[this.ip])
+                }
+                return [];
+            },
+            domains(){
+                if(this.servers[this.ip]&&this.servers[this.ip][this.webTip]){
+                    return this.servers[this.ip][this.webTip];
+                }
+                return [];
+            },
+        },
+    })
+</script>
+</body>
+</html>
