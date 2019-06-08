@@ -80,11 +80,8 @@ const permission = {
         if (roles.indexOf('admin') >= 0) {
           accessedRouters = asyncRouterMap;
         } else {
-          console.log(roles);
-
           accessedRouters = filterAsyncRouter(asyncRouterMap, roles);
         }
-
         commit('SET_ROUTERS', accessedRouters);
         resolve();
       });

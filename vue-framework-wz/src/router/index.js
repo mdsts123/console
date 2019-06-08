@@ -51,7 +51,7 @@ export default new Router({
 export const asyncRouterMap = [
   {
     path: '/',
-    redirect: '/dashboard',
+    // redirect: '/',
     name: '首页',
     component: Full,
     hidden: false,
@@ -61,6 +61,7 @@ export const asyncRouterMap = [
         path: '/dashboard',
         name: 'Dashboard',
         icon: 'speedometer',
+        // meta: { role: ['WR'] },
         component: _import('Dashboard'),
       },
       {
@@ -234,8 +235,8 @@ export const asyncRouterMap = [
         path: '/mDomain',
         icon: 'm-domainname',
         name: 'mDomain',
-        component: mDomain,
         meta: { role: ['WR'] },
+        component: mDomain,
       },
     ],
   },
