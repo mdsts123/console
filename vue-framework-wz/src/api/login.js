@@ -26,4 +26,3 @@ export function getInfo(token) {
     params: { token }
   });
 }
-

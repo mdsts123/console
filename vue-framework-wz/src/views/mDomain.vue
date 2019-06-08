@@ -1,6 +1,6 @@
 <!--  -->
 <template>
-  <div class="animated fadeIn">
+  <div class="animated fadeIn m-domain">
     <Row>
       <Col  class="m-container">
         <!--服务器列表-->
@@ -24,8 +24,6 @@ export default {
   components: {},
 
   computed: {},
-
-  mounted: {},
 
   methods: function() {}
 };

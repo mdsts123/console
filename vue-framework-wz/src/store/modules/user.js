@@ -60,15 +60,18 @@ const user = {
       state.user = '';
     }
   },
-
+//https://vuex.vuejs.org/zh/api/#state
+//https://vuex.vuejs.org/zh/guide/actions.html
+  //在 store 上注册 action。处理函数总是接受 context 作为第一个参数，payload 作为第二个参数（可选）。
+      //(context 对象,payload 载荷)
   actions: {
     // 邮箱登录
+    //(context 对象,payload 载荷)
     LoginByEmail({ commit }, userInfo) {
       const email = userInfo.email.trim();
       return new Promise((resolve, reject) => {
         loginByEmail(email, userInfo.password).then(response => {
           const data = response.data;
-          console.log(response.data);
           Cookies.set('Admin-Token', response.data.token);
           commit('SET_TOKEN', data.token);
           commit('SET_EMAIL', email);

@@ -55,6 +55,7 @@ export const asyncRouterMap = [
     name: '首页',
     component: Full,
     hidden: false,
+    meta: { role: ['WR'] },
     children: [
       {
         path: '/dashboard',
@@ -230,9 +231,11 @@ export const asyncRouterMap = [
         component: _import('Markdown'),
       },
       {
-        path:'/mDomain',
-        name:'mDomain',
-        component:mDomain,
+        path: '/mDomain',
+        icon: 'm-domainname',
+        name: 'mDomain',
+        component: mDomain,
+        meta: { role: ['WR'] },
       },
     ],
   },
@@ -243,6 +246,7 @@ export const asyncRouterMap = [
     name: '首页2',
     component: Full2,
     hidden: false,
+    meta: { role: ['admin'] },
     children: [
       {
         path: '/home1/dashboard',
@@ -260,5 +264,4 @@ export const asyncRouterMap = [
   },
 
   { path: '*', redirect: '/pages/404', hidden: true },
-
 ];

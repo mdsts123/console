@@ -23,10 +23,21 @@ const userMap = {
     introduction: '我是开发',
     name: '工程师小王',
     uid: '003'
+  },
+  //Web resource developer 网络资源开发
+  WR: {
+    role: ['WR'],
+    token: 'WR',
+    introduction: '我是WR',
+    name: 'WR小王',
+    uid: '004'
   }
 }
 
 export default {
+  //http://mockjs.com/
+  //https://github.com/nuysoft/Mock/wiki/Mock.mock()
+  //含有 url、type 和 body
   loginByEmail: config => {
     const { email } = JSON.parse(config.body);
       return userMap[email.split('@')[0]];
