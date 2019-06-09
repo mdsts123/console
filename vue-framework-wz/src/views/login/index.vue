@@ -25,7 +25,7 @@
         </Input>
       </Form-item>
       <Form-item>
-        <Button type="primary" @click="handleLogin('loginForm')" long>登录</Button>
+        <Button type="primary" @click="handleLogin" long>登录</Button>
       </Form-item>
       <!-- <div class="tips">admin账号为:admin@wz.com 密码123456</div>
       <div class="tips">editor账号:editor@wz.com 密码123456</div> -->

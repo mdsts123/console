@@ -1,0 +1,49 @@
+@import './static/m-fonts/iconfont.less';
+//
+
+.m-fl{
+  float: left;
+}
+.m-fr{
+  float: right;
+}
+.clear{
+  &::after{
+    display: block;
+    content: '';
+    clear: both;
+  }
+}
+//超出不显示 滑块
+.m-debar {
+  overflow-x: hidden;
+  .m-scroll {
+    height: 500px;
+  overflow-y: scroll;
+  width: ~'calc( 100% + 16px)';
+  background-color: #fff;
+  }
+}
+
+//mEWM
+.m-ewm-text{
+  height: 500px;
+  textarea{
+    height: 100%;
+  }
+}
+.m-search{
+  display: block;
+  margin: 1em auto;
+}
+.m-menu{
+  img{
+    width: 30px;
+    height: 30px;
+  }
+}
+.m-modal{
+  img{
+    width: 100%;
+  }
+}

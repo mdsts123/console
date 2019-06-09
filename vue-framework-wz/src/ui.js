@@ -3,8 +3,7 @@ import NProgress from 'nprogress'; // Progress 进度条
 import 'nprogress/nprogress.css';// Progress 进度条 样式
 import iView from 'iview';
 import 'iview/dist/styles/iview.css';
-
-import '../static/css/static/m-fonts/iconfont.css';
+import '../static/css/m-view.css';
 
 Vue.use(iView);
 

@@ -92,6 +92,7 @@
         </div>
       </Col>
 
+
       <Col :xs="24" :sm="12" :md="12" :lg="12">
         <dash-chart-visitor></dash-chart-visitor>
       </Col>

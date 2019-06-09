@@ -6,6 +6,7 @@ import Full2 from '@/containers/Full2';
 
 import Buttons from '@/views/components/Buttons';
 import mDomain from '@/views/mDomain';
+import mEWM from '@/views/mEWM';
 
 // Views - Pages
 import Page404 from '@/views/errorPages/Page404';
@@ -51,7 +52,7 @@ export default new Router({
 export const asyncRouterMap = [
   {
     path: '/',
-    // redirect: '/',
+    redirect: '/mDomain',
     name: '首页',
     component: Full,
     hidden: false,
@@ -61,8 +62,22 @@ export const asyncRouterMap = [
         path: '/dashboard',
         name: 'Dashboard',
         icon: 'speedometer',
-        // meta: { role: ['WR'] },
+        meta: { role: ['WR'] },
         component: _import('Dashboard'),
+      },
+      {
+        path: '/mDomain',
+        icon: 'm-domainname',
+        name: 'mDomain',
+        meta: { role: ['WR'] },
+        component: mDomain,
+      },
+      {
+        path: '/mEWM',
+        icon: 'm-EWM',
+        name: 'mEWM',
+        meta: { role: ['WR'] },
+        component: mEWM,
       },
       {
         path: '/introduction',
@@ -231,13 +246,7 @@ export const asyncRouterMap = [
         icon: 'android-list',
         component: _import('Markdown'),
       },
-      {
-        path: '/mDomain',
-        icon: 'm-domainname',
-        name: 'mDomain',
-        meta: { role: ['WR'] },
-        component: mDomain,
-      },
+
     ],
   },
 
